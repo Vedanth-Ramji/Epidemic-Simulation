@@ -101,35 +101,37 @@ function Individual(i, ii) {
     }
 
     this.infectNeighbours = function(populationArr) {
-        if (this.state === 'i') {
-            let neighbours = this.getNeighbours(populationArr);
-            let susceptibleNeighbours = neighbours.filter((neighbour) => {
-                if (neighbour.state === 's') {
-                    return neighbour;
-                }
-            });
+        if (this.state !== 'i') {
+            return;
+        }
 
-            if (random() < this.infectionPotential && susceptibleNeighbours.length > 0) {
-                susceptibleNeighbours[floor(random(susceptibleNeighbours.length))].state = 'i';
+        let neighbours = this.getNeighbours(populationArr);
+        let susceptibleNeighbours = neighbours.filter((neighbour) => {
+            if (neighbour.state === 's') {
+                return neighbour;
             }
+        });
+
+        if (random() < this.infectionPotential && susceptibleNeighbours.length > 0) {
+            susceptibleNeighbours[floor(random(susceptibleNeighbours.length))].state = 'i';
         }
     }
 
     this.tryRecovery = function() {
-        if (this.state === 'i') {
-            if (random() < this.recoveryPotential) {
-                this.state = 'r';
-            }
+        if (this.state === 'i' && random() < this.recoveryPotential) {
+            this.state = 'r';
         }
     }
 
     this.tryDeath = function() {
-        if (this.state === 'i') {
-            this.lifetime -= 50;
+        if (this.state !== 'i') {
+            return;
+        }
 
-            if (this.lifetime <= 0) {
-                this.state = 'd';
-            }
+        this.lifetime -= 50;
+
+        if (this.lifetime <= 0) {
+            this.state = 'd';
         }
     }
 
